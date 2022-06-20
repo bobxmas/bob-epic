@@ -1,0 +1,70 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: bob-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bob
+  namespace: default
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - bob-gateway
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - bob-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /api/login
+    route:
+      - destination:
+          host: service-a
+          port:
+            number: 9000
+  - match:
+    - uri:
+        prefix: /api
+      headers:
+        "@request.auth.claims.iss":
+          exact: "http://keycloak.keycloak-system.svc.cluster.local/realms/bob-realm"
+    route:
+      - destination:
+          host: service-a
+          port:
+            number: 9000
+  - route:
+    - destination:
+        host: frontend-svc
+        port:
+          number: 80
+---
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: ingress-jwt
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      istio: ingressgateway
+  jwtRules:
+  - issuer: "http://localhost:30893/realms/bob-realm"
+    jwksUri: "http://keycloak.keycloak-system.svc.cluster.local/realms/bob-realm/protocol/openid-connect/certs"
+    outputPayloadToHeader: x-jwt-payload
+    forwardOriginalToken: true

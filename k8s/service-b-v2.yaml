@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bob-service-b
+  labels:
+    account: service-b
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-b-v2
+  labels:
+    app: service-b
+    version: v2
+spec:
+  selector:
+    matchLabels:
+      app: service-b
+      version: v2
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: service-b
+        version: v2
+    spec:
+      serviceAccountName: bob-service-b
+      containers:
+      - name: service-b-v2
+        image: service-b-v2
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 9000
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: service-b-v2
+#spec:
+#  selector:
+#    app: service-b-v2
+#  ports:
+#  - port: 9000
+#    name: http

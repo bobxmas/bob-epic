@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bob-frontend-svc
+  labels:
+    account: frontend-svc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-svc
+  labels:
+    app: frontend-svc
+    version: v1
+spec:
+  selector:
+    matchLabels:
+      app: frontend-svc
+      version: v1
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: frontend-svc
+        version: v1
+    spec:
+      serviceAccountName: bob-frontend-svc
+      containers:
+      - name: frontend-svc
+        image: frontend-svc
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc
+  labels:
+    app: frontend-svc
+    service: frontend-svc
+spec:
+  selector:
+    app: frontend-svc
+  ports:
+  - port: 80
+    name: http
