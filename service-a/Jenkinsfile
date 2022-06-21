@@ -1,0 +1,26 @@
+pipeline {
+  agent any
+  stages {
+    stage("login docker") {
+      step {
+        dir("service-a") {
+          sh "docker login"
+        }
+      }
+    }
+    stage("build docker image") {
+      step {
+        dir("service-a") {
+          sh "docker image build -t bobxmasnone/bob-epic-repository:service-a"
+        }
+      }
+    }
+    stage("push docker image") {
+      step {
+        dir("service-a") {
+          sh "docker push bobxmasnone/bob-epic-repository:service-a"
+        }
+      }
+    }
+  }
+}
