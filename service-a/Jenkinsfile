@@ -1,30 +1,8 @@
-pipeline {
-  agent {
-    docker {
-      image 'docker:18.05-dind'
-      registryUrl 'https://registry.hub.docker.com'
-      registryCredentialsId 'docker-hub'
-    }
-  }
-  stages {
-    stage("login docker") {
-      steps {
-        sh "echo $pwd"
-        sh "docker login"
-      }
-    }
-    stage("build docker image") {
-      steps {
-        sh "docker image build -t bobxmasnone/bob-epic-repository:service-a"
+node {
+  checkout scm
 
-      }
-    }
-    stage("push docker image") {
-      steps {
-
-        sh "docker push bobxmasnone/bob-epic-repository:service-a"
-
-      }
-    }
+  docker.withRegistry("https://registry.hub.docker.com", "docker-hub") {
+    def serviceA = docker.build("bobxmasnone/bob-epic-repository:service-a")
+    serviceA.push()
   }
 }
