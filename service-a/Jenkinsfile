@@ -1,5 +1,12 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'docker:18.05-dind'
+      label 'bob-epic-jenkins-agent'
+      registryUrl 'https://registry.hub.docker.com'
+      registryCredentialsId 'docker-hub'
+    }
+  }
   stages {
     stage("login docker") {
       steps {
