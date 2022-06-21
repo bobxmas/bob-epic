@@ -9,23 +9,21 @@ pipeline {
   stages {
     stage("login docker") {
       steps {
-        dir("service-a") {
-          sh "docker login"
-        }
+        sh "echo $pwd"
+        sh "docker login"
       }
     }
     stage("build docker image") {
       steps {
-        dir("service-a") {
-          sh "docker image build -t bobxmasnone/bob-epic-repository:service-a"
-        }
+        sh "docker image build -t bobxmasnone/bob-epic-repository:service-a"
+
       }
     }
     stage("push docker image") {
       steps {
-        dir("service-a") {
-          sh "docker push bobxmasnone/bob-epic-repository:service-a"
-        }
+
+        sh "docker push bobxmasnone/bob-epic-repository:service-a"
+
       }
     }
   }
