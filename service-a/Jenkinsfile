@@ -2,7 +2,6 @@ pipeline {
   agent {
     docker {
       image 'docker:18.05-dind'
-      label 'bob-epic-jenkins-agent'
       registryUrl 'https://registry.hub.docker.com'
       registryCredentialsId 'docker-hub'
     }
