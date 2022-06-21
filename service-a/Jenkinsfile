@@ -1,8 +1,10 @@
 node {
   checkout scm
 
-  docker.withRegistry("https://registry.hub.docker.com", "docker-hub") {
-    def serviceA = docker.build("bobxmasnone/bob-epic-repository:service-a")
-    serviceA.push()
+  docker.withTool('') {
+    docker.withRegistry("https://registry.hub.docker.com", "docker-hub") {
+      def serviceA = docker.build("bobxmasnone/bob-epic-repository:service-a", "./service-a")
+      serviceA.push()
+    }
   }
 }
