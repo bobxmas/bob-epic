@@ -64,7 +64,7 @@ spec:
     matchLabels:
       istio: ingressgateway
   jwtRules:
-  - issuer: "http://localhost:30893/realms/bob-realm"
+  - issuer: "http://keycloak.keycloak-system.svc.cluster.local/realms/bob-realm" #"http://localhost:30893/realms/bob-realm"
     jwksUri: "http://keycloak.keycloak-system.svc.cluster.local/realms/bob-realm/protocol/openid-connect/certs"
     outputPayloadToHeader: x-jwt-payload
     forwardOriginalToken: true
